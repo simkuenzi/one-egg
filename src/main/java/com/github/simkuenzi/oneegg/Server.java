@@ -15,7 +15,8 @@ import java.util.Properties;
 public class Server {
     public static void main(String[] args) {
 
-        int port = Integer.parseInt(System.getProperty("com.github.simkuenzi.http.port"));
+        int port = Integer.parseInt(System.getProperty("com.github.simkuenzi.http.port", "0"));
+        String context = System.getProperty("com.github.simkuenzi.http.context", "/");
 
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setTemplateMode(TemplateMode.HTML);
