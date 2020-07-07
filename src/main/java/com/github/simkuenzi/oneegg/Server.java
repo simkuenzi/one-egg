@@ -7,6 +7,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -25,20 +26,32 @@ public class Server {
         templateEngine.setTemplateResolver(templateResolver);
         JavalinThymeleaf.configure(templateEngine);
 
-        Javalin app = Javalin.create(config ->
-                config.addStaticFiles("com/github/simkuenzi/oneegg/static/"))
-                .start(port);
+        Javalin app = Javalin.create(config -> {
+            config.addStaticFiles("com/github/simkuenzi/oneegg/static/");
+            config.contextPath = context;
+        })
+
+        // Workaround for https://github.com/tipsy/javalin/issues/1016
+        // Aside from mangled up characters the wrong encoding caused apache proxy to fail on style.css.
+        // Apache error log: AH01385: Zlib error -2 flushing zlib output buffer ((null))
+        .before(ctx -> {
+            if (ctx.res.getCharacterEncoding().equals("utf-8")) {
+                ctx.res.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            }
+        })
+
+        .start(port);
 
         app
-                .get("/", ctx -> ctx.render("home.html", model()))
-                .post("/", ctx -> {
-                    Map<String, Object> vars = model();
-                    String in = ctx.formParam("ingredients-in");
-                    Ingredients ingredients = new Ingredients(in);
-                    vars.put("ingredientsIn", in);
-                    vars.put("ingredientsOut", ingredients.calculate().asText());
-                    ctx.render("home.html", vars);
-                });
+            .get("/", ctx -> ctx.render("home.html", model()))
+            .post("/", ctx -> {
+                Map<String, Object> vars = model();
+                String in = ctx.formParam("ingredients-in");
+                Ingredients ingredients = new Ingredients(in);
+                vars.put("ingredientsIn", in);
+                vars.put("ingredientsOut", ingredients.calculate().asText());
+                ctx.render("home.html", vars);
+            });
     }
 
     private static Map<String, Object> model() throws IOException {
