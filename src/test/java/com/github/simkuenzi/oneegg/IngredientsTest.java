@@ -2,14 +2,12 @@ package com.github.simkuenzi.oneegg;
 
 import org.junit.Test;
 
-import java.math.BigDecimal;
-
 import static org.junit.Assert.assertEquals;
 
 public class IngredientsTest {
 
     @Test
-    public void calculateFor() {
+    public void calculate() {
         assertEquals("" +
                         "1.875 dl\tMilchwasser (halb Milch/halb Wasser)\n" +
                         "3/16 TL\tSalz\n" +
@@ -32,7 +30,7 @@ public class IngredientsTest {
     }
 
     @Test
-    public void calculateForEierOverEigelb() {
+    public void calculateEierOverEigelb() {
         assertEquals("" +
                         "1/2 Eigelb\n" +
                         "3/16 TL Salz\n" +
