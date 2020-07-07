@@ -28,6 +28,19 @@ public class IngredientsTest {
                         " \tMuskatnuss\n" +
                         "4 - 5 EL\tPaniermehl, zum Wenden, nach Belieben\n" +
                         " \tBratbutter oder Bratcrème")
-                        .calculateForScalar(new Ingredient<>(new DecimalQuantity(BigDecimal.ONE), "Eigelb")).asText());
+                        .calculate().asText());
+    }
+
+    @Test
+    public void calculateForEierOverEigelb() {
+        assertEquals("" +
+                        "1/2 Eigelb\n" +
+                        "3/16 TL Salz\n" +
+                        "1 Eier\n",
+                new Ingredients(
+                        "2 Eigelb\n" +
+                        "¾ TL Salz\n" +
+                        "4 Eier\n")
+                        .calculate().asText());
     }
 }

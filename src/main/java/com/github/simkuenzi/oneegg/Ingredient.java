@@ -34,7 +34,7 @@ public class Ingredient<T extends Quantity<T>> {
             String find = productName.substring(matcher.start(), matcher.end());
             for (int i = 0; i < references.length; i++) {
                 if (find.toLowerCase().contains(references[i])) {
-                    int rank = (int) (1d / (find.length() - references[i].length()) * 100) * (references.length - i);
+                    int rank = (int) (1d / (find.length() - references[i].length() + 1) * 100) * (references.length - i);
                     if (!rankByReference.containsKey(i) || rankByReference.get(i) < rank)
                     rankByReference.put(i, rank);
                 }
