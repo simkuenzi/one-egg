@@ -1,6 +1,7 @@
 package com.github.simkuenzi.oneegg;
 
 import io.javalin.Javalin;
+import io.javalin.core.compression.CompressionStrategy;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -30,6 +31,11 @@ public class Server {
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("com/github/simkuenzi/oneegg/static/");
             config.contextPath = context;
+
+            // Got those errors on the apache proxy with compression enabled. Related to the Issue below?
+            // AH01435: Charset null not supported.  Consider aliasing it?, referer: http://pi/one-egg/
+            // AH01436: No usable charset information; using configuration default, referer: http://pi/one-egg/
+            config.compressionStrategy(CompressionStrategy.NONE);
         })
 
         // Workaround for https://github.com/tipsy/javalin/issues/1016
