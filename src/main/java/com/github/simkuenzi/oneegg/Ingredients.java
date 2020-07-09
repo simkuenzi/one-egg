@@ -77,7 +77,7 @@ public class Ingredients {
         return asStream(RANGE_PATTERN, this::parseRangeIngredient);
     }
 
-    private Stream<? extends Ingredient<?>> all() {
+    public Stream<? extends Ingredient<?>> all() {
         return asStream(LINE_PATTERN, this::parseIngredient);
     }
 

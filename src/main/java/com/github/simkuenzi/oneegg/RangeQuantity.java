@@ -20,6 +20,11 @@ public class RangeQuantity implements Quantity<RangeQuantity> {
     }
 
     @Override
+    public String asDecimalText() {
+        return String.format("%s - %s", from.asDecimalText(), to.asDecimalText());
+    }
+
+    @Override
     public Dividend<RangeQuantity, ScalarQuantity> multiplyScalar(ScalarQuantity multiplicand) {
         return divisor -> new RangeQuantity(
                 from.multiplyScalar(multiplicand).divide(divisor),

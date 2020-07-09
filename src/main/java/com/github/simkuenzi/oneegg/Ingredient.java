@@ -25,6 +25,18 @@ public class Ingredient<T extends Quantity<T>> {
         return new Ingredient<>(reference.multiply(quantity).divide(originalReference.quantity), productName);
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getQuantity() {
+        return quantity.asText();
+    }
+
+    public String getQuantityDec() {
+        return quantity.asDecimalText();
+    }
+
     public int rank() {
         Matcher matcher = WORD_PATTERN.matcher(productName);
         Map<Integer, Integer> rankByReference = new HashMap<>();

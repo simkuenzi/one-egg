@@ -46,6 +46,11 @@ public class ScalarQuantity implements Quantity<ScalarQuantity> {
         }
     }
 
+    @Override
+    public String asDecimalText() {
+        return String.format("%.3g", (double) counter / (double) denominator);
+    }
+
     public ScalarQuantity divide(ScalarQuantity divisor) {
         return new ScalarQuantity(counter * divisor.denominator, denominator * divisor.counter);
     }

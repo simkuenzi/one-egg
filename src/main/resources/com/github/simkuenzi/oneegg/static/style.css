@@ -209,6 +209,27 @@ ul {
     padding-left: 0;
 }
 
+table {
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+}
+
+tr:nth-child(even) {
+    background-color: var(--light);
+}
+
+td {
+    padding: 5px 10px 5px 10px;
+}
+
+thead {
+    background-color: var(--dark);
+    font-weight: bold;
+    color: white;
+}
+
+
 @media screen and (-webkit-min-device-pixel-ratio: 2) {
   .form-label, .form-input, input[type=submit], button {
     width: 100%;

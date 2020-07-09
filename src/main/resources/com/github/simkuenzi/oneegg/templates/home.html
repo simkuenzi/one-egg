@@ -1,9 +1,8 @@
 <html th:replace="~{layout :: layout(~{::title}, ~{::div})}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>One Egg</title>
-    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../static/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script type="text/javascript" src="../../scripts/ListEditor.js"></script>
 </head>
 <body class="body">
 <div>
@@ -12,8 +11,40 @@
             <textarea name="ingredients-in" rows="10" th:text="${ingredientsIn}"></textarea>
             <button type="submit">Submit</button>
         </form>
-        <pre th:text="${ingredientsOut}">1 Ei
-1/2 Mehl</pre>
+
+        <table th:remove="${ingredientsOut.empty} ? all">
+            <thead>
+                <tr>
+                    <td colspan="2">Quantity</td>
+                    <td>Ingredient</td>
+                </tr>
+            </thead>
+            <tr th:each="i : ${ingredientsOut}">
+                <td th:text="${i.quantity}">12</td>
+                <td th:text="${i.quantityDec}">12.0</td>
+                <td th:text="${i.productName}">Eier</td>
+            </tr>
+            <tr th:remove="all">
+                <td>12</td>
+                <td>12.0</td>
+                <td>Eier</td>
+            </tr>
+            <tr th:remove="all">
+                <td>12</td>
+                <td>12.0</td>
+                <td>Eier</td>
+            </tr>
+            <tr th:remove="all">
+                <td>12</td>
+                <td>12.0</td>
+                <td>Eier</td>
+            </tr>
+            <tr th:remove="all">
+                <td>12</td>
+                <td>12.0</td>
+                <td>Eier</td>
+            </tr>
+        </table>
     </div>
 </div>
 </body>

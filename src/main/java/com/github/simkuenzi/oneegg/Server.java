@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class Server {
     public static void main(String[] args) {
@@ -50,7 +51,7 @@ public class Server {
                 String in = ctx.formParam("ingredients-in");
                 Ingredients ingredients = new Ingredients(in);
                 vars.put("ingredientsIn", in);
-                vars.put("ingredientsOut", ingredients.calculate().asText());
+                vars.put("ingredientsOut", ingredients.calculate().all().collect(Collectors.toList()));
                 ctx.render("home.html", vars);
             });
     }
