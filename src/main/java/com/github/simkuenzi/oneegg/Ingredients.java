@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -43,44 +42,27 @@ public class Ingredients {
         this.text = text;
     }
 
-    public Ingredients calculateForScalar(Ingredient<ScalarQuantity> reference) {
-        return calculateFor(reference, this::scalar);
-    }
-
-    public Ingredients calculateForRange(Ingredient<RangeQuantity> reference) {
-        return calculateFor(reference, this::range);
-    }
-
     public Ingredients calculate() {
-        Optional<Ingredient<ScalarQuantity>> scalarCandidate = scalar().max(Comparator.comparing(Ingredient::rank));
-        Optional<Ingredient<RangeQuantity>> rangeCandidate = range().max(Comparator.comparing(Ingredient::rank));
+        Optional<Ingredient<ScalarQuantity>> originalReferenceScalar = scalar().max(Comparator.comparingInt(Ingredient::rank));
+        Optional<Ingredient<RangeQuantity>> originalReferenceRange = range().max(Comparator.comparingInt(Ingredient::rank));
 
-        if (scalarCandidate.isPresent() && rangeCandidate.isPresent()) {
-            if (scalarCandidate.get().rank() >= rangeCandidate.get().rank()) {
-                return calculateForScalar(scalarCandidate.get().asUnit());
+        if (originalReferenceScalar.isPresent() || originalReferenceRange.isPresent()) {
+            Function<Ingredient<?>, Ingredient<?>> mapping;
+            ScalarQuantity reference = new ScalarQuantity(1, 1);
+            if (originalReferenceScalar.isPresent() && (originalReferenceRange.isEmpty() ||
+                    originalReferenceScalar.get().rank() >= originalReferenceRange.get().rank())) {
+                mapping = i -> i.calculateWithScalarReference(reference, originalReferenceScalar.get());
             } else {
-                return calculateForRange(rangeCandidate.get().asUnit());
+                mapping = i -> i.calculateWithRangeReference(new UpperOpenRange(reference), originalReferenceRange.get());
             }
-        } else if (scalarCandidate.isPresent()) {
-            return calculateForScalar(scalarCandidate.get().asUnit());
-        } else if (rangeCandidate.isPresent()) {
-            return calculateForRange(rangeCandidate.get().asUnit());
+            StringWriter writer = new StringWriter();
+            PrintWriter out = new PrintWriter(writer);
+            all().map(mapping).map(Ingredient::asText).forEach(out::println);
+            out.flush();
+            return new Ingredients(writer.toString());
         } else {
-            throw new RuntimeException("No appropriate ingredient for reference found.");
+            return this;
         }
-    }
-
-    private <T extends Quantity<T>> Ingredients calculateFor(Ingredient<T> reference, Supplier<Stream<Ingredient<T>>> candidatesForReference) {
-        Ingredient<T> originalReference = candidatesForReference.get()
-                .filter(i -> i.sameProduct(reference)).findFirst().orElseThrow(
-                () -> new RuntimeException(String.format("Reference for %s does not exist among all the ingredients", reference))
-        );
-
-        StringWriter writer = new StringWriter();
-        PrintWriter out = new PrintWriter(writer);
-        all().map(i -> i.calculateFor(reference, originalReference)).forEach(out::println);
-        out.flush();
-        return new Ingredients(writer.toString());
     }
 
     public String asText() {
@@ -144,14 +126,8 @@ public class Ingredients {
 
     private ScalarQuantity parseScalarQuantity(String countInt, String countDec, String denomInt, String denomDec) {
         return denomInt != null || denomDec != null
-                ? new FractionQuantity(parseDecimal(countInt, countDec), parseDecimal(denomInt, denomDec))
-                : parseDecimalQuantity(countInt, countDec);
-    }
-
-    private ScalarQuantity parseDecimalQuantity(String integerPart, String decimalPlaces) {
-        return decimalPlaces == null || decimalPlaces.isEmpty()
-            ? new FractionQuantity(parseDecimal(integerPart, ""), BigDecimal.ONE)
-            : new DecimalQuantity(parseDecimal(integerPart, decimalPlaces));
+                ? new ScalarQuantity(parseDecimal(countInt, countDec), parseDecimal(denomInt, denomDec))
+                : new ScalarQuantity(parseDecimal(countInt, countDec), BigDecimal.ONE);
     }
 
     private BigDecimal parseDecimal(String integerPart, String decimalPlaces) {

@@ -10,11 +10,11 @@ public class IngredientTest {
 
     @Test
     public void rankEier() {
-        assertEquals(500, new Ingredient<>(new DecimalQuantity(BigDecimal.ONE), "Eier").rank());
+        assertEquals(500, new Ingredient<>(new ScalarQuantity(BigDecimal.ONE), "Eier").rank());
     }
 
     @Test
     public void rankEigelb() {
-        assertEquals(400, new Ingredient<>(new DecimalQuantity(BigDecimal.ONE), "Eigelb").rank());
+        assertEquals(400, new Ingredient<>(new ScalarQuantity(BigDecimal.ONE), "Eigelb").rank());
     }
 }

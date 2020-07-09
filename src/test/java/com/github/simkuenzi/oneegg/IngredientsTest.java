@@ -9,7 +9,7 @@ public class IngredientsTest {
     @Test
     public void calculate() {
         assertEquals("" +
-                        "1.875 dl\tMilchwasser (halb Milch/halb Wasser)\n" +
+                        "1 7/8 dl\tMilchwasser (halb Milch/halb Wasser)\n" +
                         "3/16 TL\tSalz\n" +
                         "37 1/2 g\tHartweizengriess\n" +
                         "1 Eigelb\n" +
@@ -39,6 +39,17 @@ public class IngredientsTest {
                         "2 Eigelb\n" +
                         "¾ TL Salz\n" +
                         "4 Eier\n")
+                        .calculate().asText());
+    }
+
+    @Test
+    public void calculateNotQuiteOneEggBug() {
+        assertEquals("" +
+                        "1/16 TL Salz\n" +
+                        "1 Eier\n",
+                new Ingredients(
+                        "¾ TL Salz\n" +
+                        "12 Eier\n")
                         .calculate().asText());
     }
 }

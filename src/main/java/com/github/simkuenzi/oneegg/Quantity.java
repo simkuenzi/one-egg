@@ -3,9 +3,7 @@ package com.github.simkuenzi.oneegg;
 public interface Quantity<T extends Quantity<T>> {
     String asText();
 
-    T multiply(ScalarQuantity multiplicand);
+    Dividend<T, ScalarQuantity> multiplyScalar(ScalarQuantity multiplicand);
 
-    ScalarQuantity divide(T quantity);
-
-    T unit();
+    Dividend<T, RangeQuantity> multiplyRange(RangeReference multiplicand);
 }

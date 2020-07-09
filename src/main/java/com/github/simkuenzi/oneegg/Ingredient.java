@@ -17,12 +17,12 @@ public class Ingredient<T extends Quantity<T>> {
         this.productName = productName;
     }
 
-    public boolean sameProduct(Ingredient<?> other) {
-        return productName.equals(other.productName);
+    public Ingredient<T> calculateWithScalarReference(ScalarQuantity reference, Ingredient<ScalarQuantity> originalReference) {
+        return new Ingredient<>(reference.multiply(quantity).divide(originalReference.quantity), productName);
     }
 
-    public <U extends Quantity<U>> Ingredient<? extends Quantity<?>> calculateFor(Ingredient<U> reference, Ingredient<U> originalReference) {
-        return new Ingredient<>(this.quantity.multiply(reference.quantity.divide(originalReference.quantity)), productName);
+    public Ingredient<T> calculateWithRangeReference(RangeReference reference, Ingredient<RangeQuantity> originalReference) {
+        return new Ingredient<>(reference.multiply(quantity).divide(originalReference.quantity), productName);
     }
 
     public int rank() {
@@ -43,12 +43,13 @@ public class Ingredient<T extends Quantity<T>> {
         return rankByReference.values().stream().max(Comparator.comparingInt(v -> v)).orElse(0);
     }
 
-    public Ingredient<T> asUnit() {
-        return new Ingredient<>(quantity.unit(), productName);
+
+    public String asText() {
+        return quantity.asText() + " " + productName;
     }
 
     @Override
     public String toString() {
-        return quantity.asText() + " " + productName;
+        return asText();
     }
 }
