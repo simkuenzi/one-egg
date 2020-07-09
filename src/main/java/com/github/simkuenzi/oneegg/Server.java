@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 public class Server {
     public static void main(String[] args) {
@@ -49,9 +48,9 @@ public class Server {
             .post("/", ctx -> {
                 Map<String, Object> vars = model();
                 String in = ctx.formParam("ingredients-in");
-                Ingredients ingredients = new Ingredients(in);
+                Recipe recipe = new Recipe(new TextIngredients(in));
                 vars.put("ingredientsIn", in);
-                vars.put("ingredientsOut", ingredients.calculate().all().collect(Collectors.toList()));
+                vars.put("ingredientsOut", recipe.calculate().getIngredients());
                 ctx.render("home.html", vars);
             });
     }

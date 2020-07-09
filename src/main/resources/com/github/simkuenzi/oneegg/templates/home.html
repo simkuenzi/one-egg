@@ -12,7 +12,7 @@
             <button type="submit">Submit</button>
         </form>
 
-        <table th:remove="${ingredientsOut.empty} ? all">
+        <table th:unless="${#lists.isEmpty(ingredientsOut)}">
             <thead>
                 <tr>
                     <td colspan="2">Quantity</td>
