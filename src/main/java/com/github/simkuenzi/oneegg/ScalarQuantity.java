@@ -3,6 +3,9 @@ package com.github.simkuenzi.oneegg;
 import java.math.BigDecimal;
 
 public class ScalarQuantity implements Quantity<ScalarQuantity> {
+    private static final NumberRepresentation superscript = new NumberRepresentation(new SuperscriptRepresentation());
+    private static final NumberRepresentation subscript = new NumberRepresentation(new SubscriptRepresentation());
+
     private final int counter;
     private final int denominator;
 
@@ -37,9 +40,9 @@ public class ScalarQuantity implements Quantity<ScalarQuantity> {
         if (remainingCounter == 0) {
             return String.format("%d", intPart);
         } else if (intPart == 0) {
-            return String.format("%d/%d", remainingCounter, reduced.denominator);
+            return String.format("%s\u2044%s", superscript.asText(remainingCounter), subscript.asText(reduced.denominator));
         } else {
-            return String.format("%d %d/%d", intPart, remainingCounter, reduced.denominator);
+            return String.format("%d %s/%s", intPart, superscript.asText(remainingCounter), subscript.asText(reduced.denominator));
         }
     }
 
