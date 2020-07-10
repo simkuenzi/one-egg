@@ -1,5 +1,6 @@
 <html th:replace="~{layout :: layout(~{::title}, ~{::div})}" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>One Egg</title>
     <link rel="stylesheet" href="../static/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -7,9 +8,26 @@
 <body class="body">
 <div>
 
+        <p class="comment">
+            Copy a recipe from your favorite cooking web site to the box below. Let One Egg do the calculations for you.
+        </p>
         <form class="form" method="post">
-            <textarea name="ingredients-in" rows="10" th:text="${ingredientsIn}"></textarea>
-            <button type="submit">Submit</button>
+            <p>
+                <textarea name="ingredients-in" rows="10" th:text="${ingredientsIn}"></textarea>
+            </p>
+            <p class="form-row">
+                Use
+                <select name="reference-type">
+                    <option value="exact">exactly</option>
+                </select>
+                <input name="reference-quantity" type="number" value="1" />
+                <select name="reference-type">
+                    <option value="Ei">Egg</option>
+                </select>
+            </p>
+            <div class="form-row-action">
+                <button type="submit">Submit</button>
+            </div>
         </form>
 
         <table th:unless="${#lists.isEmpty(ingredientsOut)}">
