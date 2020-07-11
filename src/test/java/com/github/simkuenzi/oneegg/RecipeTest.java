@@ -61,6 +61,18 @@ public class RecipeTest {
                         .calculate());
     }
 
+    @Test
+    public void calculateRange() {
+        assertRecipeEquals(Arrays.asList(
+                ingredient("100", "100", "g \tMehl"),
+                ingredient("1 - 2 ¹/₃", "1.00 - 2.33",  "Eier")),
+                new Recipe("" +
+                                "300 g \tMehl\n" +
+                                "3-7  \tEier\n",
+                        ReferenceType.AT_LEAST, 1, "Eier")
+                        .calculate());
+    }
+
     private void assertRecipeEquals(List<Consumer<Ingredient<?>>> expected, Recipe actual) {
         assertEquals(expected.size(), actual.getIngredients().size());
         IntStream.range(0, expected.size()).forEach(i -> expected.get(i).accept(actual.getIngredients().get(i)));

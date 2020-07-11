@@ -14,11 +14,11 @@ public class UpperOpenRange implements RangeReference {
 
     @Override
     public Dividend<ScalarQuantity, RangeQuantity> multiplyScalar(ScalarQuantity multiplicand) {
-        return divisor -> divisor.divideFromUpper(multiplicand.multiply(from));
+        return divisor -> divisor.divideFromLower(multiplicand.multiply(from));
     }
 
     @Override
     public Dividend<RangeQuantity, RangeQuantity> multiplyRange(RangeQuantity multiplicand) {
-        return divisor -> multiplicand.multiply(from).divideByUpper(divisor);
+        return divisor -> multiplicand.multiply(from).divideByLower(divisor);
     }
 }
