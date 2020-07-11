@@ -3,67 +3,66 @@
     <meta charset="UTF-8">
     <title>One Egg</title>
     <link rel="stylesheet" href="../static/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body class="body">
 <div>
 
-        <p class="comment">
-            Copy a recipe from your favorite cooking web site to the box below. Let One Egg do the calculations for you.
+    <p class="comment">
+        Copy a recipe from your favorite cooking web site to the box below. Let One Egg do the calculations for you.
+    </p>
+    <form class="form" method="post">
+        <p>
+            <textarea id="ingredients-in" name="ingredients-in" rows="10" th:text="${ingredientsIn}" onkeyup="updateReferenceNames()"></textarea>
         </p>
-        <form class="form" method="post">
-            <p>
-                <textarea name="ingredients-in" rows="10" th:text="${ingredientsIn}"></textarea>
-            </p>
-            <p class="form-row">
-                Use
-                <select name="reference-type">
-                    <option value="exact">exactly</option>
-                </select>
-                <input name="reference-quantity" type="number" value="1" />
-                <select name="reference-type">
-                    <option value="Ei">Egg</option>
-                </select>
-            </p>
-            <div class="form-row-action">
-                <button type="submit">Submit</button>
-            </div>
-        </form>
+        <p class="form-row">
+            Use
+            <select name="reference-type">
+                <option value="exact">exactly</option>
+            </select>
+            <input name="reference-quantity" type="number" value="1" />
+            <select id="reference-name" name="reference-name">
+                <option value="Ei">Egg</option>
+            </select>
+        </p>
+        <div class="form-row-action">
+            <button type="submit">Submit</button>
+        </div>
+    </form>
 
-        <table th:unless="${#lists.isEmpty(ingredientsOut)}">
-            <thead>
-                <tr>
-                    <td colspan="2">Quantity</td>
-                    <td>Ingredient</td>
-                </tr>
-            </thead>
-            <tr th:each="i : ${ingredientsOut}">
-                <td th:text="${i.quantity}">12</td>
-                <td th:text="${i.quantityDec}">12.0</td>
-                <td th:text="${i.productName}">Eier</td>
+    <table th:unless="${#lists.isEmpty(ingredientsOut)}">
+        <thead>
+            <tr>
+                <td colspan="2">Quantity</td>
+                <td>Ingredient</td>
             </tr>
-            <tr th:remove="all">
-                <td>12</td>
-                <td>12.0</td>
-                <td>Eier</td>
-            </tr>
-            <tr th:remove="all">
-                <td>12</td>
-                <td>12.0</td>
-                <td>Eier</td>
-            </tr>
-            <tr th:remove="all">
-                <td>12</td>
-                <td>12.0</td>
-                <td>Eier</td>
-            </tr>
-            <tr th:remove="all">
-                <td>12</td>
-                <td>12.0</td>
-                <td>Eier</td>
-            </tr>
-        </table>
-    </div>
+        </thead>
+        <tr th:each="i : ${ingredientsOut}">
+            <td th:text="${i.quantity}">12</td>
+            <td th:text="${i.quantityDec}">12.0</td>
+            <td th:text="${i.productName}">Eier</td>
+        </tr>
+        <tr th:remove="all">
+            <td>12</td>
+            <td>12.0</td>
+            <td>Eier</td>
+        </tr>
+        <tr th:remove="all">
+            <td>12</td>
+            <td>12.0</td>
+            <td>Eier</td>
+        </tr>
+        <tr th:remove="all">
+            <td>12</td>
+            <td>12.0</td>
+            <td>Eier</td>
+        </tr>
+        <tr th:remove="all">
+            <td>12</td>
+            <td>12.0</td>
+            <td>Eier</td>
+        </tr>
+    </table>
+
 </div>
 </body>
 </html>

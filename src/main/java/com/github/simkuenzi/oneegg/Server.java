@@ -12,11 +12,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class Server {
     public static void main(String[] args) {
 
-        int port = Integer.parseInt(System.getProperty("com.github.simkuenzi.http.port", "0"));
+        int port = Integer.parseInt(System.getProperty("com.github.simkuenzi.http.port", "9000"));
         String context = System.getProperty("com.github.simkuenzi.http.context", "/");
 
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
@@ -58,6 +59,10 @@ public class Server {
                 vars.put("ingredientsIn", in);
                 vars.put("ingredientsOut", recipe.calculate().getIngredients());
                 ctx.render("home.html", vars);
+            })
+            .post("/evalRef", ctx -> {
+                ctx.json(new TextIngredients(ctx.body()).all().map(Ingredient::getProductName).collect(Collectors.toList()));
+                System.out.println(ctx.body());
             });
     }
 

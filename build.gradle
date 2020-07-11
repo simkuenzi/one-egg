@@ -22,6 +22,7 @@ dependencies {
     implementation group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.11.RELEASE'
     implementation group: 'io.javalin', name: 'javalin', version: '3.9.1'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.11.1"
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
