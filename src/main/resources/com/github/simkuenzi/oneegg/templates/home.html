@@ -12,14 +12,14 @@
     </p>
     <form class="form" method="post">
         <p>
-            <textarea id="ingredients-in" name="ingredients-in" rows="10" th:text="${ingredientsIn}" onkeyup="updateReferenceNames()"></textarea>
+            <textarea id="ingredients-in" name="ingredients" rows="10" th:text="${ingredients}" onkeyup="updateReferenceNames()"></textarea>
         </p>
         <p class="form-row">
             Use
-            <select id="reference-type" name="reference-type">
+            <select id="reference-type" name="referenceType">
             </select>
-            <input name="reference-quantity" type="number" value="1" />
-            <select id="reference-name" name="reference-name">
+            <input name="referenceValue" type="number" value="1" />
+            <select id="reference-name" name="referenceName" onchange="updateReferenceTypes()">
             </select>
         </p>
         <div class="form-row-action">
@@ -61,6 +61,9 @@
         </tr>
     </table>
 
+    <script>
+        updateReferenceNames();
+    </script>
 </div>
 </body>
 </html>

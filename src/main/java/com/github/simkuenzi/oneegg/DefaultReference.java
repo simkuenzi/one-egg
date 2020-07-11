@@ -2,18 +2,18 @@ package com.github.simkuenzi.oneegg;
 
 public class DefaultReference {
     private final String productName;
-    private final ReferenceType referenceType;
+    private final QuantityType quantityType;
 
-    public DefaultReference(String productName, ReferenceType referenceType) {
+    public DefaultReference(String productName, QuantityType quantityType) {
         this.productName = productName;
-        this.referenceType = referenceType;
+        this.quantityType = quantityType;
     }
 
     public String getProductName() {
         return productName;
     }
 
-    public ReferenceType getReferenceType() {
-        return referenceType;
+    public QuantityType getQuantityType() {
+        return quantityType;
     }
 }

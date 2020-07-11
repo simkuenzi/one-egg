@@ -107,4 +107,15 @@ public class TextIngredients implements Ingredients {
         decimalPlaces = decimalPlaces != null ? decimalPlaces : "";
         return new BigDecimal(new BigInteger(integerPart + decimalPlaces), decimalPlaces.length());
     }
+
+    public QuantityType quantityType(String name) {
+        return
+                scalar().filter(i -> i.getProductName().equals(name))
+                        .findFirst().map(i -> QuantityType.SCALAR)
+                        .orElse(range().filter(i -> i.getProductName().equals(name))
+                                .findFirst()
+                                .map(i -> QuantityType.RANGE)
+                                .orElse(QuantityType.SCALAR)
+                );
+    }
 }

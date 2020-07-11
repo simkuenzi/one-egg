@@ -1,5 +1,5 @@
 package com.github.simkuenzi.oneegg;
 
 public enum ReferenceType {
-    RANGE, SCALAR
+    EXACT, AT_LEAST, AT_MOST
 }

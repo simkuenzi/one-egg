@@ -21,7 +21,7 @@ public class RecipeTest {
                         ingredient("37 ¹/₂", "37.5", "g\tMehl"),
                         ingredient("12 ¹/₂", "12.5", "g\tSbrinz AOP, gerieben"),
                         ingredient("1 - 1 ¹/₄", "1.00 - 1.25", "EL\tPaniermehl, zum Wenden, nach Belieben")),
-                new Recipe(new TextIngredients(
+                new Recipe("" +
                         "7,5 dl\tMilchwasser (halb Milch/halb Wasser)\n" +
                         "¾ TL\tSalz\n" +
                         "150 g\tHartweizengriess\n" +
@@ -30,7 +30,8 @@ public class RecipeTest {
                         "50 g\tSbrinz AOP, gerieben\n" +
                         " \tMuskatnuss\n" +
                         "4 - 5 EL\tPaniermehl, zum Wenden, nach Belieben\n" +
-                        " \tBratbutter oder Bratcrème"))
+                        " \tBratbutter oder Bratcrème",
+                        ReferenceType.EXACT, 1, "Eigelb")
                         .calculate());
     }
 
@@ -40,10 +41,11 @@ public class RecipeTest {
                         ingredient("¹⁄₂", "0.500", "Eigelb"),
                         ingredient("³⁄₁₆", "0.188", "TL Salz"),
                         ingredient("1", "1.00", "Eier")),
-                new Recipe(new TextIngredients(
+                new Recipe("" +
                         "2 Eigelb\n" +
                         "¾ TL Salz\n" +
-                        "4 Eier\n"))
+                        "4 Eier\n",
+                        ReferenceType.EXACT, 1, "Eier")
                         .calculate());
     }
 
@@ -52,9 +54,10 @@ public class RecipeTest {
         assertRecipeEquals(Arrays.asList(
                         ingredient("¹⁄₁₆", "0.0625", "TL Salz"),
                         ingredient("1", "1.00",  "Eier")),
-                new Recipe(new TextIngredients(
+                new Recipe("" +
                         "¾ TL Salz\n" +
-                        "12 Eier\n"))
+                        "12 Eier\n",
+                         ReferenceType.EXACT, 1, "Eier")
                         .calculate());
     }
 

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -54,14 +55,18 @@ public class Server {
             .get("/", ctx -> ctx.render("home.html", model()))
             .post("/", ctx -> {
                 Map<String, Object> vars = model();
-                String in = ctx.formParam("ingredients-in");
-                Recipe recipe = new Recipe(new TextIngredients(in));
-                vars.put("ingredientsIn", in);
+                Recipe recipe = new Recipe(
+                        ctx.formParam("ingredients"),
+                        ReferenceType.valueOf(ctx.formParam("referenceType")),
+                        Integer.parseInt(Objects.requireNonNull(ctx.formParam("referenceValue", "0"))),
+                        ctx.formParam("referenceName"));
+                ctx.formParamMap().forEach((key, value) -> vars.put(key, value.get(0)));
                 vars.put("ingredientsOut", recipe.calculate().getIngredients());
                 ctx.render("home.html", vars);
             })
             .post("/evalRef", ctx -> ctx.json(new TextIngredients(ctx.body()).all().map(Ingredient::getProductName).collect(Collectors.toList())))
-            .post("/evalDef", ctx -> ctx.json(new Recipe(new TextIngredients(ctx.body())).defaultReference()));
+            .post("/evalDef", ctx -> ctx.json(new Recipe(new TextIngredients(ctx.body())).defaultReference()))
+            .post("/ingredient/:name/evalType", ctx -> ctx.result(new TextIngredients(ctx.body()).quantityType(ctx.pathParam("name")).name()));
     }
 
     private static Map<String, Object> model() throws IOException {

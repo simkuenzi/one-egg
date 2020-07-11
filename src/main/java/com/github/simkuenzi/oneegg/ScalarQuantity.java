@@ -14,6 +14,10 @@ public class ScalarQuantity implements Quantity<ScalarQuantity> {
         this.denominator = denominator;
     }
 
+    public ScalarQuantity(int value) {
+        this(value, 1);
+    }
+
     public ScalarQuantity(BigDecimal value) {
         this(value, BigDecimal.ONE);
     }
