@@ -73,8 +73,8 @@
 
 .form {
     text-align: left;
-    width: 100%;
     display: inline-block;
+    margin-bottom: 50px;
 }
 
 .form-label {
@@ -166,7 +166,15 @@ input[type=text], input[type=password], input[type=number], textarea, .input, se
 }
 
 textarea {
-    width: 100%;
+    min-width: 800px;
+}
+
+.reference-name {
+    width: 300px;
+}
+
+.reference-type {
+    width: 150px;
 }
 
 input[type=text], input[type=password], input[type=number], textarea, .input {
@@ -220,7 +228,7 @@ table {
     font-size: 16pt;
 }
 
-tr:nth-child(even) {
+tr:nth-child(odd) {
     background-color: var(--light);
 }
 
@@ -234,20 +242,20 @@ thead {
     color: white;
 }
 
-
 @media screen and (-webkit-min-device-pixel-ratio: 2) {
-  .form-label, .form-input, input[type=submit], button {
+  .form-label, .form-input, input[type=submit], button, textarea, form {
     width: 100%;
+    max-width: 100%;
   }
-  .form {
-      width: 100%;
+  .header > span, .footer > span {
+    font-size: 30pt;
   }
   button, input[type=submit], input[type=text], input[type=password], input[type=number], textarea, .input, select,
-  label, body, .form-input-message, .comment, table, p {
-    font-size: 46pt;
+  label, body, .form-input-message, .comment, table, p, span {
+    font-size: 42pt;
   }
-  .header, .footer {
-    font-size: 30pt;
+  .reference-type {
+    width: 240px;
   }
   .tab-button, .tab-button-active {
     width: auto;

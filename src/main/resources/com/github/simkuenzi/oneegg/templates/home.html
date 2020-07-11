@@ -12,57 +12,52 @@
     </p>
     <form class="form" method="post">
         <p>
-            <textarea id="ingredients-in" name="ingredients" rows="10" th:text="${recipe.ingredientsText}" onkeyup="updateReferenceNames()"></textarea>
+            <textarea id="ingredients-in" name="ingredients" rows="10" th:text="${recipe.ingredientsText}"
+                      onchange="updateReferenceNames()"
+                      onkeyup="updateReferenceNames()"
+                      onpaste="setTimeout(function() {updateReferenceNames();}, 0);"
+            ></textarea>
         </p>
-        <p class="form-row">
-            Use
-            <select id="reference-type" name="referenceType">
+        <div class="form-row">
+            <span>Use</span>
+            <select id="reference-type" name="referenceType" class="reference-type">
             </select>
             <input name="referenceValue" type="number" th:value="${recipe.referenceValue}" value="1" />
-            <select id="reference-name" name="referenceName" onchange="updateReferenceTypes()">
+            <select id="reference-name" name="referenceName" class="reference-name" onchange="updateReferenceTypes()">
             </select>
-        </p>
+        </div>
         <div class="form-row-action">
-            <button type="submit">Submit</button>
+            <button type="submit">Go!</button>
         </div>
     </form>
 
     <table th:unless="${#lists.isEmpty(newRecipe.ingredients)}">
-        <thead>
-            <tr>
-                <td colspan="2">Quantity</td>
-                <td>Ingredient</td>
-            </tr>
-        </thead>
         <tr th:each="i : ${newRecipe.ingredients}">
             <td th:text="${i.quantity}">12</td>
-            <td th:text="${i.quantityDec}">12.0</td>
             <td th:text="${i.productName}">Eier</td>
         </tr>
         <tr th:remove="all">
             <td>12</td>
-            <td>12.0</td>
             <td>Eier</td>
         </tr>
         <tr th:remove="all">
             <td>12</td>
-            <td>12.0</td>
             <td>Eier</td>
         </tr>
         <tr th:remove="all">
             <td>12</td>
-            <td>12.0</td>
             <td>Eier</td>
         </tr>
         <tr th:remove="all">
             <td>12</td>
-            <td>12.0</td>
             <td>Eier</td>
         </tr>
     </table>
 
     <script th:inline="javascript">
-        initSelects(/*[[${recipe.referenceType}]]*/ "EXACT", /*[[${recipe.referenceName}]]*/ "Ei");
+        $(document).ready(function() {
+            initSelects(/*[[${recipe.referenceType}]]*/ "EXACT", /*[[${recipe.referenceName}]]*/ "Ei");
+        });
     </script>
 </div>
 </body>
