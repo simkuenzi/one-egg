@@ -60,10 +60,8 @@ public class Server {
                 vars.put("ingredientsOut", recipe.calculate().getIngredients());
                 ctx.render("home.html", vars);
             })
-            .post("/evalRef", ctx -> {
-                ctx.json(new TextIngredients(ctx.body()).all().map(Ingredient::getProductName).collect(Collectors.toList()));
-                System.out.println(ctx.body());
-            });
+            .post("/evalRef", ctx -> ctx.json(new TextIngredients(ctx.body()).all().map(Ingredient::getProductName).collect(Collectors.toList())))
+            .post("/evalDef", ctx -> ctx.json(new Recipe(new TextIngredients(ctx.body())).defaultReference()));
     }
 
     private static Map<String, Object> model() throws IOException {
