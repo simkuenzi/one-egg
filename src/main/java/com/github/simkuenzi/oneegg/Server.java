@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -52,28 +51,23 @@ public class Server {
         .start(port);
 
         app
-            .get("/", ctx -> ctx.render("home.html", model()))
+            .get("/", ctx -> ctx.render("home.html", model(new Recipe(), new Recipe())))
             .post("/", ctx -> {
-                Map<String, Object> vars = model();
-                Recipe recipe = new Recipe(
-                        ctx.formParam("ingredients"),
-                        ReferenceType.valueOf(ctx.formParam("referenceType")),
-                        Integer.parseInt(Objects.requireNonNull(ctx.formParam("referenceValue", "0"))),
-                        ctx.formParam("referenceName"));
-                ctx.formParamMap().forEach((key, value) -> vars.put(key, value.get(0)));
-                vars.put("ingredientsOut", recipe.calculate().getIngredients());
-                ctx.render("home.html", vars);
+                Recipe recipe = new Recipe(ctx);
+                ctx.render("home.html", model(recipe, recipe.calculate()));
             })
             .post("/evalRef", ctx -> ctx.json(new TextIngredients(ctx.body()).all().map(Ingredient::getProductName).collect(Collectors.toList())))
-            .post("/evalDef", ctx -> ctx.json(new Recipe(new TextIngredients(ctx.body())).defaultReference()))
+            .post("/evalDef", ctx -> ctx.result(new Recipe(new TextIngredients(ctx.body())).defaultReference()))
             .post("/ingredient/:name/evalType", ctx -> ctx.result(new TextIngredients(ctx.body()).quantityType(ctx.pathParam("name")).name()));
     }
 
-    private static Map<String, Object> model() throws IOException {
+    private static Map<String, Object> model(Recipe origRecipe, Recipe newRecipe) throws IOException {
         Map<String, Object> vars = new HashMap<>();
         Properties versionProps = new Properties();
         versionProps.load(Server.class.getResourceAsStream("version.properties"));
         vars.put("version", versionProps.getProperty("version"));
+        vars.put("recipe", origRecipe);
+        vars.put("newRecipe", newRecipe);
         return vars;
     }
 }

@@ -1,11 +1,8 @@
 package com.github.simkuenzi.oneegg;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.javalin.http.Context;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Recipe {
@@ -14,23 +11,34 @@ public class Recipe {
     private final ReferenceType referenceType;
     private final int referenceValue;
     private final String referenceName;
+    private final String ingredientsText;
 
-    public Recipe(Ingredients ingredients) {
-        this.ingredients = ingredients;
-        referenceType = ReferenceType.EXACT;
-        referenceValue = 1;
-        referenceName = "Egg";
+    public Recipe() {
+        this(new ListIngredients(Collections.emptyList(), Collections.emptyList(), Collections.emptyList()), ReferenceType.EXACT, 1, "", "");
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public Recipe(@JsonProperty("ingredients") String ingredients,
-                  @JsonProperty("referenceType") ReferenceType referenceType,
-                  @JsonProperty("referenceValue") int referenceValue,
-                  @JsonProperty("referenceName") String referenceName) {
-        this.ingredients = new TextIngredients(ingredients);
+    public Recipe(Context httpContext) {
+        this(
+                httpContext.formParam("ingredients"),
+                ReferenceType.valueOf(httpContext.formParam("referenceType")),
+                Integer.parseInt(Objects.requireNonNull(httpContext.formParam("referenceValue", "0"))),
+                httpContext.formParam("referenceName"));
+    }
+
+    public Recipe(Ingredients ingredients) {
+        this(ingredients, ReferenceType.EXACT, 1, "", "");
+    }
+
+    public Recipe(String ingredients, ReferenceType referenceType, int referenceValue, String referenceName) {
+        this(new TextIngredients(ingredients), referenceType, referenceValue, referenceName, ingredients);
+    }
+
+    public Recipe(Ingredients ingredients, ReferenceType referenceType, int referenceValue, String referenceName, String ingredientsText) {
+        this.ingredients = ingredients;
         this.referenceType = referenceType;
         this.referenceValue = referenceValue;
         this.referenceName = referenceName;
+        this.ingredientsText = ingredientsText;
     }
 
     public Recipe calculate() {
@@ -63,5 +71,21 @@ public class Recipe {
 
     public List<Ingredient<?>> getIngredients() {
         return ingredients.all().collect(Collectors.toList());
+    }
+
+    public ReferenceType getReferenceType() {
+        return referenceType;
+    }
+
+    public int getReferenceValue() {
+        return referenceValue;
+    }
+
+    public String getReferenceName() {
+        return referenceName;
+    }
+
+    public String getIngredientsText() {
+        return ingredientsText;
     }
 }

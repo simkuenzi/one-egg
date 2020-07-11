@@ -1,6 +1,14 @@
 function updateReferenceNames() {
+    initSelects("", "");
+}
+
+function updateReferenceTypes() {
+    initReferenceTypes("");
+}
+
+function initSelects(referenceType, referenceName) {
     $.post("evalRef", $("#ingredients-in").val(), function(data) {
-        var selected = $("#reference-name").val();
+        var selected = referenceName != "" ? referenceName : $("#reference-name").val();
         var hasSelection = false;
         $('#reference-name').empty();
         data.forEach(function(item, index) {
@@ -17,13 +25,15 @@ function updateReferenceNames() {
         if (!hasSelection && $("#reference-name option").length > 0) {
             $.post("evalDef", $("#ingredients-in").val(), function(data) {
                 $("#reference-name option[value='" + data + "']").attr("selected", true);
+                initReferenceTypes(referenceType);
             });
+        } else {
+            initReferenceTypes(referenceType);
         }
-        updateReferenceTypes();
     });
-}
+ }
 
-function updateReferenceTypes() {
+function initReferenceTypes(referenceType) {
     $.post("ingredient/" + encodeURIComponent($("#reference-name").val()) + "/evalType", $("#ingredients-in").val(), function(data) {
         $("#reference-type").empty();
         switch (data) {
@@ -34,6 +44,10 @@ function updateReferenceTypes() {
                 $("#reference-type").append($("<option value='AT_LEAST'>at least</option>"));
                 $("#reference-type").append($("<option value='AT_MOST'>at most</option>"));
             break;
+        }
+
+        if (referenceType != "") {
+           $("#reference-type").val(referenceType);
         }
     });
 }

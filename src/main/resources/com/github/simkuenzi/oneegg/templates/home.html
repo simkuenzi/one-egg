@@ -12,13 +12,13 @@
     </p>
     <form class="form" method="post">
         <p>
-            <textarea id="ingredients-in" name="ingredients" rows="10" th:text="${ingredients}" onkeyup="updateReferenceNames()"></textarea>
+            <textarea id="ingredients-in" name="ingredients" rows="10" th:text="${recipe.ingredientsText}" onkeyup="updateReferenceNames()"></textarea>
         </p>
         <p class="form-row">
             Use
             <select id="reference-type" name="referenceType">
             </select>
-            <input name="referenceValue" type="number" value="1" />
+            <input name="referenceValue" type="number" th:value="${recipe.referenceValue}" value="1" />
             <select id="reference-name" name="referenceName" onchange="updateReferenceTypes()">
             </select>
         </p>
@@ -27,14 +27,14 @@
         </div>
     </form>
 
-    <table th:unless="${#lists.isEmpty(ingredientsOut)}">
+    <table th:unless="${#lists.isEmpty(newRecipe.ingredients)}">
         <thead>
             <tr>
                 <td colspan="2">Quantity</td>
                 <td>Ingredient</td>
             </tr>
         </thead>
-        <tr th:each="i : ${ingredientsOut}">
+        <tr th:each="i : ${newRecipe.ingredients}">
             <td th:text="${i.quantity}">12</td>
             <td th:text="${i.quantityDec}">12.0</td>
             <td th:text="${i.productName}">Eier</td>
@@ -61,8 +61,8 @@
         </tr>
     </table>
 
-    <script>
-        updateReferenceNames();
+    <script th:inline="javascript">
+        initSelects(/*[[${recipe.referenceType}]]*/ "EXACT", /*[[${recipe.referenceName}]]*/ "Ei");
     </script>
 </div>
 </body>
