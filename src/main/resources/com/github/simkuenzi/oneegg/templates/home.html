@@ -1,4 +1,4 @@
-<html th:replace="~{layout :: layout(~{::title}, ~{::div})}" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout.html :: layout(~{::title}, ~{::div})}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>One Egg</title>
@@ -7,7 +7,7 @@
 <body class="body">
 <div>
 
-    <p class="comment">
+    <p class="comment" th:text="#{home.comment}">
         Copy a recipe from your favorite cooking web site to the box below. Let One Egg do the calculations for you.
     </p>
     <form class="form" method="post">
@@ -19,7 +19,7 @@
             ></textarea>
         </p>
         <div class="form-row">
-            <span>Use</span>
+            <span th:text="#{home.use}">Use</span>
             <select id="reference-type" name="referenceType" class="reference-type">
             </select>
             <input name="referenceValue" type="number" th:value="${recipe.referenceValue}" value="1" />
@@ -27,28 +27,28 @@
             </select>
         </div>
         <div class="form-row-action">
-            <button type="submit">Go!</button>
+            <button type="submit" th:text="#{home.go}">Go!</button>
         </div>
     </form>
 
-    <table th:unless="${#lists.isEmpty(newRecipe.ingredients)}">
+    <table th:remove="all-but-first" th:unless="${#lists.isEmpty(newRecipe.ingredients)}">
         <tr th:each="i : ${newRecipe.ingredients}">
             <td th:text="${i.quantity}">12</td>
             <td th:text="${i.productName}">Eier</td>
         </tr>
-        <tr th:remove="all">
+        <tr>
             <td>12</td>
             <td>Eier</td>
         </tr>
-        <tr th:remove="all">
+        <tr>
             <td>12</td>
             <td>Eier</td>
         </tr>
-        <tr th:remove="all">
+        <tr>
             <td>12</td>
             <td>Eier</td>
         </tr>
-        <tr th:remove="all">
+        <tr>
             <td>12</td>
             <td>Eier</td>
         </tr>

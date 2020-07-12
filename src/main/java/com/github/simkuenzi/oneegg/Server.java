@@ -2,8 +2,10 @@ package com.github.simkuenzi.oneegg;
 
 import io.javalin.Javalin;
 import io.javalin.core.compression.CompressionStrategy;
-import io.javalin.plugin.rendering.template.JavalinThymeleaf;
+import io.javalin.plugin.rendering.FileRenderer;
+import io.javalin.plugin.rendering.JavalinRenderer;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -20,14 +22,8 @@ public class Server {
         int port = Integer.parseInt(System.getProperty("com.github.simkuenzi.http.port", "9000"));
         String context = System.getProperty("com.github.simkuenzi.http.context", "/");
 
-        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setPrefix("/com/github/simkuenzi/oneegg/templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setCacheable(false);
-        TemplateEngine templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-        JavalinThymeleaf.configure(templateEngine);
+        JavalinRenderer.register(renderer(TemplateMode.HTML), ".html");
+        JavalinRenderer.register(renderer(TemplateMode.JAVASCRIPT), ".js");
 
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("com/github/simkuenzi/oneegg/static/");
@@ -58,7 +54,12 @@ public class Server {
             })
             .post("/evalRef", ctx -> ctx.json(new TextIngredients(ctx.body()).all().map(Ingredient::getProductName).collect(Collectors.toList())))
             .post("/evalDef", ctx -> ctx.result(new Recipe(new TextIngredients(ctx.body())).defaultReference()))
-            .post("/ingredient/:name/evalType", ctx -> ctx.result(new TextIngredients(ctx.body()).quantityType(ctx.pathParam("name")).name()));
+            .post("/ingredient/:name/typeOptions.json", ctx -> {
+                Map<String, Object> model = new HashMap<>();
+                model.put("quantityType", new TextIngredients(ctx.body()).quantityType(ctx.pathParam("name")).name());
+                ctx.render("typeOptions.js", model);
+                ctx.contentType("text/json");
+            });
     }
 
     private static Map<String, Object> model(Recipe origRecipe, Recipe newRecipe) throws IOException {
@@ -69,5 +70,20 @@ public class Server {
         vars.put("recipe", origRecipe);
         vars.put("newRecipe", newRecipe);
         return vars;
+    }
+
+    private static FileRenderer renderer(TemplateMode templateMode) {
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setTemplateMode(templateMode);
+        templateResolver.setPrefix("/com/github/simkuenzi/oneegg/templates/");
+        templateResolver.setCacheable(false);
+        templateResolver.setForceTemplateMode(true);
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
+        return (filePath, model, context) -> {
+            WebContext thymeleafContext = new WebContext(context.req, context.res, context.req.getServletContext(), context.req.getLocale());
+            thymeleafContext.setVariables(model);
+            return templateEngine.process(filePath, thymeleafContext);
+        };
     }
 }

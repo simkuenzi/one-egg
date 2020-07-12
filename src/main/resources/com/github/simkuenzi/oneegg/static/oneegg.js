@@ -34,18 +34,11 @@ function initSelects(referenceType, referenceName) {
  }
 
 function initReferenceTypes(referenceType) {
-    $.post("ingredient/" + encodeURIComponent($("#reference-name").val()) + "/evalType", $("#ingredients-in").val(), function(data) {
+    $.post("ingredient/" + encodeURIComponent($("#reference-name").val()) + "/typeOptions.json", $("#ingredients-in").val(), function(data) {
         $("#reference-type").empty();
-        switch (data) {
-            case 'SCALAR':
-                $("#reference-type").append($("<option value='EXACT'>exactly</option>"));
-            break;
-            case 'RANGE':
-                $("#reference-type").append($("<option value='AT_LEAST'>at least</option>"));
-                $("#reference-type").append($("<option value='AT_MOST'>at most</option>"));
-            break;
-        }
-
+        data.options.forEach(function(item, index) {
+            $("#reference-type").append($("<option></option>").attr('value', item.value).text(item.text));
+        });
         if (referenceType != "") {
            $("#reference-type").val(referenceType);
         }
