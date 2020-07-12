@@ -55,20 +55,17 @@ public class ScalarQuantity implements Quantity<ScalarQuantity> {
         return String.format("%.3g", (double) counter / (double) denominator);
     }
 
-    public ScalarQuantity divide(ScalarQuantity divisor) {
-        return new ScalarQuantity(counter * divisor.denominator, denominator * divisor.counter);
-    }
-
     public ScalarQuantity multiply(ScalarQuantity multiplicand) {
         return new ScalarQuantity(counter * multiplicand.counter, denominator * multiplicand.denominator);
     }
 
     @Override
     public Dividend<ScalarQuantity, ScalarQuantity> multiplyScalar(ScalarQuantity multiplicand) {
-        return divisor -> new ScalarQuantity(
-                counter * multiplicand.counter,
-                denominator * multiplicand.denominator)
-                .divide(divisor);
+        return divisor -> multiply(multiplicand).divide(divisor);
+    }
+
+    public <T extends Quantity<T>> Dividend<T, ScalarQuantity> multiply(T multiplicand) {
+        return multiplicand.multiplyScalar(this);
     }
 
     @Override
@@ -77,6 +74,10 @@ public class ScalarQuantity implements Quantity<ScalarQuantity> {
     }
 
 
+    public ScalarQuantity divide(ScalarQuantity divisor) {
+        return new ScalarQuantity(counter * divisor.denominator, denominator * divisor.counter);
+    }
+
     private ScalarQuantity reduce() {
         for (int i = 1; i <= 20; i++) {
             if (i * counter % denominator == 0) {
@@ -84,9 +85,5 @@ public class ScalarQuantity implements Quantity<ScalarQuantity> {
             }
         }
         return this;
-    }
-
-    public <T extends Quantity<T>> Dividend<T, ScalarQuantity> multiply(T multiplicand) {
-        return multiplicand.multiplyScalar(this);
     }
 }

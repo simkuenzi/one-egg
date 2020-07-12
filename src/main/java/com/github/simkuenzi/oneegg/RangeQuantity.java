@@ -26,9 +26,12 @@ public class RangeQuantity implements Quantity<RangeQuantity> {
 
     @Override
     public Dividend<RangeQuantity, ScalarQuantity> multiplyScalar(ScalarQuantity multiplicand) {
-        return divisor -> new RangeQuantity(
-                from.multiplyScalar(multiplicand).divide(divisor),
-                to.multiplyScalar(multiplicand).divide(divisor));
+        return divisor -> multiply(multiplicand).divide(divisor);
+    }
+
+    @Override
+    public Dividend<RangeQuantity, RangeQuantity> multiplyRange(RangeReference multiplicand) {
+        return multiplicand.multiplyRange(this);
     }
 
     public RangeQuantity multiply(ScalarQuantity multiplicand) {
@@ -37,9 +40,8 @@ public class RangeQuantity implements Quantity<RangeQuantity> {
                 to.multiply(multiplicand));
     }
 
-    @Override
-    public Dividend<RangeQuantity, RangeQuantity> multiplyRange(RangeReference multiplicand) {
-        return multiplicand.multiplyRange(this);
+    public RangeQuantity divide(ScalarQuantity divisor) {
+        return new RangeQuantity(from.divide(divisor), to.divide(divisor));
     }
 
     public ScalarQuantity divideFromUpper(ScalarQuantity dividend) {
