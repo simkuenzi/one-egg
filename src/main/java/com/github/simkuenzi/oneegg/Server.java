@@ -55,10 +55,8 @@ public class Server {
             .post("/evalRef", ctx -> ctx.json(new TextIngredients(ctx.body()).all().map(Ingredient::getProductName).collect(Collectors.toList())))
             .post("/evalDef", ctx -> ctx.result(new Recipe(new TextIngredients(ctx.body())).defaultReference()))
             .post("/ingredient/:name/typeOptions.json", ctx -> {
-                Map<String, Object> model = new HashMap<>();
-                model.put("quantityType", new TextIngredients(ctx.body()).quantityType(ctx.pathParam("name")).name());
-                ctx.render("typeOptions.js", model);
-                ctx.contentType("text/json");
+                QuantityType quantityType = new TextIngredients(ctx.body()).quantityType(ctx.pathParam("name"));
+                ctx.render("typeOptions.js", Map.of("quantityType", quantityType)).contentType("text/json");
             });
     }
 

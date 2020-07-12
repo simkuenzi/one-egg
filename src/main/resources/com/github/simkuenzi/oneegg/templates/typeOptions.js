@@ -1,6 +1,6 @@
 {
   "options": [
-  [# th:switch="${quantityType}" ]
+  [# th:switch="${quantityType.name()}" ]
   [# th:case="'SCALAR'" ]
     {
         "text": [[ #{home.exact} ]],
