@@ -22,14 +22,14 @@ public class TextIngredients implements Ingredients {
 
     private static final String FRACTION_SLASH = "\u2044";
     private static final String DEC_REGEX_FMT = "(?<%s>\\d+)(?:[.,](?<%s>\\d+))?";
-    private static final String NUM_REGEX_FMT = DEC_REGEX_FMT + "(?:[/" + FRACTION_SLASH + "]" + DEC_REGEX_FMT + ")?";
-    private static final Pattern LINE_PATTERN = Pattern.compile(String.format(NUM_REGEX_FMT + "(?:\\h*-\\h*" + NUM_REGEX_FMT + ")?\\h+(?<" + PRODUCT_GRP +">.*)",
+    private static final String NUM_REGEX_FMT = DEC_REGEX_FMT + "(?:\\h*[/" + FRACTION_SLASH + "]\\h*" + DEC_REGEX_FMT + ")?(g|kg|l|dl|cl|ml|EL|TL)?";
+    private static final Pattern LINE_PATTERN = Pattern.compile(String.format("\\h*" + NUM_REGEX_FMT + "(?:\\h*-\\h*" + NUM_REGEX_FMT + ")?\\h*(?<" + PRODUCT_GRP +">.*)",
             COUNT_INT_GRP, COUNT_DEC_GRP, DENOM_INT_GRP, DENOM_DEC_GRP, COUNT_TO_INT_GRP, COUNT_TO_DEC_GRP,
             DENOM_TO_INT_GRP, DENOM_TO_DEC_GRP));
-    private static final Pattern RANGE_PATTERN = Pattern.compile(String.format(NUM_REGEX_FMT + "\\h*-\\h*" + NUM_REGEX_FMT + "\\h+(?<" + PRODUCT_GRP +">.*)",
+    private static final Pattern RANGE_PATTERN = Pattern.compile(String.format("\\h*" + NUM_REGEX_FMT + "\\h*-\\h*" + NUM_REGEX_FMT + "\\h*(?<" + PRODUCT_GRP +">.*)",
             COUNT_INT_GRP, COUNT_DEC_GRP, DENOM_INT_GRP, DENOM_DEC_GRP, COUNT_TO_INT_GRP, COUNT_TO_DEC_GRP,
             DENOM_TO_INT_GRP, DENOM_TO_DEC_GRP));
-    private static final Pattern SCALAR_PATTERN = Pattern.compile(String.format(NUM_REGEX_FMT + "\\h+(?<" + PRODUCT_GRP +">.*)",
+    private static final Pattern SCALAR_PATTERN = Pattern.compile(String.format("\\h*" + NUM_REGEX_FMT + "\\h*(?<" + PRODUCT_GRP +">.*)",
             COUNT_INT_GRP, COUNT_DEC_GRP, DENOM_INT_GRP, DENOM_DEC_GRP));
 
     private final String text;
