@@ -160,6 +160,20 @@ public class RecipeTest {
                         .calculate());
     }
 
+    @Test
+    public void getIngredientsText() {
+        assertEquals("" +
+                        "¹⁄₂ Eigelb\n" +
+                        "³⁄₁₆ TL Salz\n" +
+                        "1 Eier\n",
+                new Recipe("" +
+                        "2 Eigelb\n" +
+                        "¾ TL Salz\n" +
+                        "4 Eier\n",
+                        ReferenceType.EXACT, 1, "Eier")
+                        .calculate().getIngredientsText());
+    }
+
 
     private void assertRecipeEquals(List<Consumer<Ingredient<?>>> expected, Recipe actual) {
         assertEquals(expected.size(), actual.getIngredients().size());

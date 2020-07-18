@@ -111,9 +111,7 @@
 .form-action-message {
     color: var(--dark);
     margin-right: 30px;
-    vertical-align: bottom;
     display: inline-block;
-    line-height: 60px;
 }
 
 .tab {

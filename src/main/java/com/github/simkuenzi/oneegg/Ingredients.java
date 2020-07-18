@@ -8,4 +8,6 @@ public interface Ingredients {
     Stream<Ingredient<RangeQuantity>> range();
 
     Stream<? extends Ingredient<?>> all();
+
+    String asText();
 }

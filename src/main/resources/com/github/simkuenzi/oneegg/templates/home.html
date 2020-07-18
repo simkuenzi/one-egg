@@ -1,4 +1,5 @@
-<html th:replace="~{layout.html :: layout(~{::title}, ~{::div})}" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout.html :: layout(~{::title}, ~{::div})}" xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>One Egg</title>
@@ -27,6 +28,11 @@
             </select>
         </div>
         <div class="form-row-action">
+            <span class="form-action-message" th:if="${sendFailed}" th:text="#{home.sendFailed}"></span>
+            <th:block th:if="${authenticated}">
+                <label for="save">Save in Sketchbook</label>
+                <input type="checkbox" id="save" name="save" />
+            </th:block>
             <button type="submit" th:text="#{home.go}">Go!</button>
         </div>
     </form>

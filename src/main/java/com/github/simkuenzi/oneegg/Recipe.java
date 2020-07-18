@@ -11,7 +11,6 @@ public class Recipe {
     private final ReferenceType referenceType;
     private final int referenceValue;
     private final String referenceName;
-    private final String ingredientsText;
 
     public Recipe() {
         this(new ListIngredients(Collections.emptyList(), Collections.emptyList(), Collections.emptyList()), ReferenceType.EXACT, 1, "", "");
@@ -38,7 +37,6 @@ public class Recipe {
         this.referenceType = referenceType;
         this.referenceValue = referenceValue;
         this.referenceName = referenceName;
-        this.ingredientsText = ingredientsText;
     }
 
     public Recipe calculate() {
@@ -86,6 +84,6 @@ public class Recipe {
     }
 
     public String getIngredientsText() {
-        return ingredientsText;
+        return ingredients.asText();
     }
 }

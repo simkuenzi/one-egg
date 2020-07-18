@@ -1,7 +1,13 @@
 package com.github.simkuenzi.oneegg;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.simkuenzi.service.Http;
+import com.github.simkuenzi.service.Registry;
 import io.javalin.Javalin;
 import io.javalin.core.compression.CompressionStrategy;
+import io.javalin.http.Context;
 import io.javalin.plugin.rendering.FileRenderer;
 import io.javalin.plugin.rendering.JavalinRenderer;
 import org.thymeleaf.TemplateEngine;
@@ -13,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -20,7 +27,7 @@ public class Server {
     public static void main(String[] args) {
 
         int port = Integer.parseInt(System.getProperty("com.github.simkuenzi.http.port", "9000"));
-        String context = System.getProperty("com.github.simkuenzi.http.context", "/");
+        String context = System.getProperty("com.github.simkuenzi.http.context", "/one-egg");
 
         JavalinRenderer.register(renderer(TemplateMode.HTML), ".html");
         JavalinRenderer.register(renderer(TemplateMode.JAVASCRIPT), ".js");
@@ -47,10 +54,17 @@ public class Server {
         .start(port);
 
         app
-            .get("/", ctx -> ctx.render("home.html", model(new Recipe(), new Recipe())))
+            .get("/", ctx -> ctx.render("home.html", model(new Recipe(), new Recipe(), ctx)))
             .post("/", ctx -> {
                 Recipe recipe = new Recipe(ctx);
-                ctx.render("home.html", model(recipe, recipe.calculate()));
+                Recipe calculated = recipe.calculate();
+                Map<String, Object> model = model(recipe, calculated, ctx);
+                if (ctx.formParamMap().containsKey("save")) {
+                    JsonNode request = new ObjectMapper().createObjectNode().put("content", calculated.getIngredientsText());
+                    new Http(Registry.local.lookup("sketchbook"), user(ctx))
+                            .send("/api/Recipe", request, ObjectNode.class, resp -> {}, () -> model.put("sendFailed", true));
+                }
+                ctx.render("home.html", model);
             })
             .post("/evalRef", ctx -> ctx.json(new TextIngredients(ctx.body()).all().map(Ingredient::getProductName).collect(Collectors.toList())))
             .post("/evalDef", ctx -> ctx.result(new Recipe(new TextIngredients(ctx.body())).defaultReference()))
@@ -60,14 +74,19 @@ public class Server {
             });
     }
 
-    private static Map<String, Object> model(Recipe origRecipe, Recipe newRecipe) throws IOException {
+    private static Map<String, Object> model(Recipe origRecipe, Recipe newRecipe, Context ctx) throws IOException {
         Map<String, Object> vars = new HashMap<>();
         Properties versionProps = new Properties();
         versionProps.load(Server.class.getResourceAsStream("version.properties"));
         vars.put("version", versionProps.getProperty("version"));
         vars.put("recipe", origRecipe);
         vars.put("newRecipe", newRecipe);
+        vars.put("authenticated", !Objects.equals(user(ctx), "anon"));
         return vars;
+    }
+
+    private static String user(Context ctx) {
+        return ctx.headerMap().getOrDefault("X-SK-Auth", System.getProperty("com.github.simkuenzi.dev.user", "anon"));
     }
 
     private static FileRenderer renderer(TemplateMode templateMode) {

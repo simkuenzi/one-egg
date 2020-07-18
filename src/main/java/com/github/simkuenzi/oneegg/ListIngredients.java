@@ -1,5 +1,7 @@
 package com.github.simkuenzi.oneegg;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -28,5 +30,14 @@ public class ListIngredients implements Ingredients {
     @Override
     public Stream<? extends Ingredient<?>> all() {
         return all.stream();
+    }
+
+    @Override
+    public String asText() {
+        StringWriter writer = new StringWriter();
+        PrintWriter out = new PrintWriter(writer);
+        all().map(Ingredient::asText).forEach(out::println);
+        out.flush();
+        return writer.toString();
     }
 }

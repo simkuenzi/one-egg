@@ -53,6 +53,11 @@ public class TextIngredients implements Ingredients {
         return asStream(LINE_PATTERN, this::parseIngredient);
     }
 
+    @Override
+    public String asText() {
+        return text;
+    }
+
     private <T extends Quantity<T>> Stream<Ingredient<T>> asStream(Pattern pattern, Function<Matcher, Ingredient<T>> parser) {
         return Arrays.stream(text.split("\r?\n"))
                 .map(l -> Normalizer.normalize(l, Normalizer.Form.NFKD))
