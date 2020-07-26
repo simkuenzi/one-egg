@@ -38,14 +38,15 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+
 publishing {
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/simkuenzi/one-egg")
             credentials {
-                username = System.getenv("GIT_USER")
-                password = System.getenv("GIT_TOKEN")
+                username = gitUser
+                password = gitToken
             }
         }
     }
@@ -58,9 +59,9 @@ publishing {
 
 remotes {
     webServer {
-        host = System.properties['deployServer']
-        user = System.properties['deployUser']
-        identity = file(System.properties['deployIdentity'] ?: 'id_rsa')
+        host = deployServer
+        user = deployUser
+        identity = file(deployKey ?: 'id_rsa')
     }
 }
 
@@ -80,7 +81,7 @@ task deploy(dependsOn: jar) {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                put from: jar.archiveFile.get().asFile, into: System.properties['deployPath']
+                put from: jar.archiveFile.get().asFile, into: "${deployPath}/${project.name}/${project.name}.jar"
             }
         }
     }
